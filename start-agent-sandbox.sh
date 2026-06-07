@@ -18,4 +18,4 @@
     --security-opt no-new-privileges \
     --network=bridge \
     -v /home/paacode/agent-work:/home/coding-agent/workspace \
-    coding-agent
+    agent-sandbox
