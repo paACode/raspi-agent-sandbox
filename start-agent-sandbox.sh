@@ -11,8 +11,6 @@
   # Internet access, isolated from host network
   # Persist workspace
   sudo docker run -it --rm \
-    --memory="3g" \
-    --memory-swap="3g" \
     --cpus="3" \
     --cap-drop ALL \
     --security-opt no-new-privileges \
