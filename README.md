@@ -137,7 +137,7 @@ bash start-agent-sandbox.sh
 ### Drop files for the agent
 
 ```bash
-cp myproject.py ~/coding-agent/sandbox-input/
+cp myproject.py ~/raspi-agent-sandbox/sandbox-input/
 ```
 
 Agent sees it at `~/input/myproject.py` inside container. Read-only — agent cannot modify your original.
@@ -149,7 +149,7 @@ No container restart needed — kill OpenCode, edit config on host, relaunch ins
 
 ```bash
 # Edit config from host
-nvim ~/coding-agent/sandbox-config/opencode/opencode.json
+nvim ~/raspi-agent-sandbox/sandbox-config/opencode/opencode.json
 ```
 
 ### Run OpenCode inside container and have fun 😎
@@ -161,7 +161,7 @@ opencode
 ### Review output
 
 ```bash
-ls ~/coding-agent/sandbox-output/
+ls ~/raspi-agent-sandbox/sandbox-output/
 ```
 
 Only copy files you have reviewed into your real project.
