@@ -5,9 +5,7 @@ RUN apt-get update && apt-get install -y \
     neovim tmux \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g opencode-ai \
-    && npm install -g --ignore-scripts @earendil-works/pi-coding-agent
-
+RUN npm install -g opencode-ai 
 
 RUN useradd -m -u 1001 coding-agent
 USER coding-agent
