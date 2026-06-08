@@ -5,6 +5,7 @@ AGENT_UID=1001
 #                 Mounts to ~/.config inside container.
 #                 Writable folder shared with host. Modify settings here.
 mkdir -p "$HOME/coding-agent/sandbox-config"
+sudo chown "$AGENT_UID:$AGENT_UID" "$HOME/coding-agent/sandbox-config"
 
 # sandbox-input: Files you want agent to work with (code, docs, data)
 #                Mounts to ~/input inside container. Read-only.
