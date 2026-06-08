@@ -26,7 +26,7 @@ sudo docker run -it --rm \
 --cap-drop ALL \
 --security-opt no-new-privileges \
 --network=bridge \
--v "$HOME/coding-agent/sandbox-config:/home/coding-agent/.config" \
--v "$HOME/coding-agent/sandbox-input:/home/coding-agent/input:ro" \
--v "$HOME/coding-agent/sandbox-output:/home/coding-agent/output" \
+-v "$HOME/raspi-agent-sandbox/sandbox-config:/home/coding-agent/.config" \
+-v "$HOME/raspi-agent-sandbox/sandbox-input:/home/coding-agent/input:ro" \
+-v "$HOME/raspi-agent-sandbox/sandbox-output:/home/coding-agent/output" \
 agent-sandbox
