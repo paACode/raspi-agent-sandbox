@@ -2,7 +2,7 @@ FROM node:20-slim
 
 RUN apt-get update && apt-get install -y \
     git curl bash python3 python3-pip \
-    neovim tmux \
+    neovim\
     && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g opencode-ai 
