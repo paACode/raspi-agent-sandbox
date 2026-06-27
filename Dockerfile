@@ -1,9 +1,7 @@
 FROM node:20-slim
 
 RUN apt-get update && apt-get install -y \
-    git curl bash python3 python3-pip \
-    openssh-client \
-    neovim\
+    neovim curl ripgrep fd-find\
     && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g opencode-ai 
