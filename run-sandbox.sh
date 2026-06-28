@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SANDBOX_DIR="$(dirname "$(readlink -f "$0")")"
 CONTAINER_NAME="agent_sandbox_instance"
 
 if [ "$(docker ps -q -f name=^/${CONTAINER_NAME}$)" ]; then
