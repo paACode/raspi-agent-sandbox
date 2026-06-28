@@ -1,15 +1,5 @@
 #!/bin/bash
 
-SANDBOX_DIR="$(dirname "$(readlink -f "$0")")"
-
-# sandbox-config: Agent settings (opencode.json)
-# mounts to /home/coding-agent/.config"
-mkdir -p "$SANDBOX_DIR/sandbox-config"
-
-# sandbox-workdir: Shared workdir
-# mounts to /home/coding-agent/workdir"
-mkdir -p "$SANDBOX_DIR/sandbox-workdir"
-
 # CPU limit (leaving 1 core for OS)
 # Strip all Linux capabilities
 # Block privilege escalation
