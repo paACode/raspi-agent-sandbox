@@ -9,7 +9,7 @@
 
 API keys leak in public repos every day. Dependencies get compromised. Malicious packages slip into ecosystems. One wrong `npm install` and something is reading your files, exfiltrating your keys, or worse.
 
-AI coding agents make this worse. Experienced developers know to isolate their tools. People new to coding often don't — and that is where things go wrong. When you run an agent locally without isolation, it can read all your files, write anywhere, install packages, and make unrestricted network requests. Most tutorials don't mention this.
+AI coding agents make this worse. Experienced developers know to isolate their tools. People new to coding often don't — and that is where things go wrong. When you run an agent locally without isolation, it can read all your files, write anywhere, install packages, execute harmful programs and make unrestricted network requests. Most tutorials don't mention this.
 
 This project demonstrates how to run an AI agent responsibly — isolated in a Docker sandbox on a Raspberry Pi 4B. We use [OpenCode](https://opencode.ai), which lets you use powerful hosted models directly without a subscription.
 
@@ -25,6 +25,8 @@ This project demonstrates how to run an AI agent responsibly — isolated in a D
 - Always review every command an agent executes
 - Always know what files an agent can read
 - Isolation is not paranoia — it is good engineering
+
+New to coding? Don't just copy-paste—review and experiment. Single-shot prompting works for senior developers who know exactly what they need and why. As a junior, you're still building that foundation. Don't play the AI slot machine. Take the scenic route and actually learn from the code.
 
 ---
 
@@ -61,8 +63,7 @@ Two layers of isolation: physical (a dedicated Raspberry Pi) and logical (Docker
 │   │                                                      │  │
 │   │  ~/raspi-agent-sandbox/                              │  │
 │   │  ├── sandbox-config/                                 │  │
-│   │  ├── sandbox-input/                                  │  │
-│   │  └── sandbox-output/                                 │  │
+│   │  └── sandbox-workdir/                                │  │
 │   │              │                                       │  │
 │   │              ▼                                       │  │
 │   │  ┌────────────────────────────────────────────────┐  │  │
@@ -73,8 +74,7 @@ Two layers of isolation: physical (a dedicated Raspberry Pi) and logical (Docker
 │   │  │  Privilege escalation: blocked                 │  │  │
 │   │  │                                                │  │  │
 │   │  │  ~/.config  ◄── sandbox-config (read/write)    │  │  │
-│   │  │  ~/input    ◄── sandbox-input  (read-only)     │  │  │
-│   │  │  ~/output   ──► sandbox-output (read/write)    │  │  │
+│   │  │  ~/workdir  ──► sandbox-workdir (read/write)   │  │  │
 │   │  │                                                │  │  │
 │   │  │  [opencode]                                    │  │  │
 │   │  │       │                                        │  │  │
@@ -89,11 +89,11 @@ Two layers of isolation: physical (a dedicated Raspberry Pi) and logical (Docker
 ## ⚙️ How It Works
 
 1. SSH into Raspi from anywhere
-2. Drop files into `sandbox-input/` — agent can read but not modify them
-4. Start sandbox — OpenCode runs isolated inside Docker
-5. Adjust agent settings in `sandbox-config/` (if you want it less restrictive)
-6. Agent writes results to `~/output` → appears in `sandbox-output/` on host
-7. Review output on host before copying into your real project
+2. Clone the project you want to work on into `sandbox-workdir/`
+3. Start sandbox — OpenCode runs isolated inside Docker
+4. Adjust agent settings in `sandbox-config/` (if you want it less restrictive)
+6. Agent can work in `~/workdir` → appears in `sandbox-workdir/` on host
+7. You review the code, you execute the code, the agent only writes code .
 
 ---
 
@@ -126,53 +126,23 @@ git clone git@github.com:paACode/raspi-agent-sandbox.git
 cd raspi-agent-sandbox
 ```
 
-### 3. Build the image
-
+### 3. Prepare Sandbox
 ```bash
-sudo docker build -t agent-sandbox .
+bash prepare_sandbox.sh
 ```
 
-### 4. Start the sandbox
+### 4. Build the Sandbox
 
 ```bash
-bash start-agent-sandbox.sh
+bash build_sandbox.sh
 ```
 
----
-
-## 🛠️ Usage
-
-### Drop files for the agent
+### 5. Start the sandbox 
 
 ```bash
-cp myproject.py ~/raspi-agent-sandbox/sandbox-input/
+bash run_sandbox.sh
 ```
-
-Agent sees it at `~/input/myproject.py` inside container. Read-only — agent cannot modify your original.
-
-### Configure OpenCode
-
-`sandbox-config/` is bidirectional — OpenCode writes its config there, you can edit from host.
-No container restart needed — kill OpenCode, edit config on host, relaunch inside container.
-
-```bash
-# Edit config from host
-nvim ~/raspi-agent-sandbox/sandbox-config/opencode/opencode.json
-```
-
-### Run OpenCode inside container and have fun 😎
-
-```bash
-opencode
-```
-
-### Review output
-
-```bash
-ls ~/raspi-agent-sandbox/sandbox-output/
-```
-
-Only copy files you have reviewed into your real project.
+Note: You can also open more than one opencode instance with this command.
 
 ---
 
@@ -181,31 +151,13 @@ Only copy files you have reviewed into your real project.
 | Protection | How |
 |---|---|
 | 🖥️ Physical isolation | Runs on separate Raspberry Pi, not your main machine |
-| 👤 Non-root user | Agent runs as `coding-agent` (UID 1001) |
+| 👤 Non-root user | Agent runs as `coding-agent` |
 | 🚫 No capabilities | `--cap-drop ALL` strips all Linux privileges |
 | ⛔ No privilege escalation | `--security-opt no-new-privileges` |
 | 🌐 Isolated network | Bridge network — internet yes, host network no |
-| 📁 Read-only input | Agent cannot modify your source files |
 | 🗑️ Ephemeral container | `--rm` — container deleted on exit, clean slate |
 | ⚡ CPU limit | `--cpus="3"` — leaves 1 core for OS |
 | 👁️ Permission prompts | OpenCode asks before every action, including file reads |
 
 ---
 
-## ⚠️ Important Reminder
-
-> [!WARNING]
-> Always review every file and every command your agent executed.
-> Agents can make mistakes, introduce vulnerabilities, or do unexpected things.
-> The sandbox limits the blast radius — your review is the last line of defense.
-
----
-
-## 📁 File Structure
-
-```
-raspi-agent-sandbox/
-├── Dockerfile                  # Container definition
-├── start-agent-sandbox.sh      # Launch script with security flags
-└── README.md
-```
