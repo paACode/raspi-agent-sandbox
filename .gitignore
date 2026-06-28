@@ -1,3 +1,2 @@
-# Ignore  the sandbox folders
-sandbox-input
-sandbox-output
+# Ignore  the sandbox folder
+sandbox-workdir
