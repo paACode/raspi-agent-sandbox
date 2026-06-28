@@ -12,9 +12,10 @@ RUN if [ -z "$UID" ] || [ -z "$GID" ]; then \
         echo "ERROR: UID and GID build-args are required. Build with --build-arg UID=\$(id -u) --build-arg GID=\$(id -g)" >&2; \
         exit 1; \
     fi && \
+    (getent passwd node >/dev/null && userdel -r node || true) && \
+    (getent group node >/dev/null && groupdel node || true) && \
     groupadd -g ${GID} coding-agent && \
     useradd -m -u ${UID} -g ${GID} coding-agent
-
 
 USER coding-agent
 WORKDIR /home/coding-agent
