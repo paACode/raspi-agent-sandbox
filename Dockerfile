@@ -11,4 +11,4 @@ USER coding-agent
 
 WORKDIR /home/coding-agent
 
-CMD ["bash"]
+CMD ["opencode"]
