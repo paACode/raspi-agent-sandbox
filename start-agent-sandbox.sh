@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ "$(docker ps -q -f name=^/${CONTAINER_NAME}$)" ]; then
+    echo "Container '${CONTAINER_NAME}' is already running. Attaching via opencode..."
+    docker exec -it "$CONTAINER_NAME" opencode
+    exit 0
+fi
+
 # CPU limit (leaving 1 core for OS)
 # Strip all Linux capabilities
 # Block privilege escalation
