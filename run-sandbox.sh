@@ -1,5 +1,7 @@
 #!/bin/bash
 
+CONTAINER_NAME="agent_sandbox_instance"
+
 if [ "$(docker ps -q -f name=^/${CONTAINER_NAME}$)" ]; then
     echo "Container '${CONTAINER_NAME}' is already running. Attaching via opencode..."
     docker exec -it "$CONTAINER_NAME" opencode
@@ -11,6 +13,7 @@ fi
 # Block privilege escalation
 # Internet access, isolated from host network
 docker run -it --rm \
+--name "$CONTAINER_NAME" \
 --cpus="3" \
 --cap-drop ALL \
 --security-opt no-new-privileges \
