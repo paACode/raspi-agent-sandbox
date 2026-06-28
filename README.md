@@ -38,12 +38,10 @@ When OpenCode asks *"can I read this file?"* — that is the point. You should k
 
 ---
 
-## Demo (Screenshot
-Example of how I use the Sandbox (Terminal Mngmnt with TMUX):
-- Input Folder (Top Left): used by raspi-user
-- Output Folder (Bot Left): Used by coding-agent
-- Opencode (Right)
-<img width="1913" height="1031" alt="image" src="https://github.com/user-attachments/assets/0d6bf0c4-6008-4c44-97f9-b0d4cdbc65a5" />
+## Demo (Screenshot)
+Example of how I use the Sandbox (Terminal Mngmnt with TMUX). Screenshot shows how i try to find any security leaks of my sandbox.
+<img width="1902" height="1122" alt="image" src="https://github.com/user-attachments/assets/83ff3ce0-2d0e-4705-9e72-557da5c58381" />
+
 
 
 ## 🏗️ Isolation Architecture
