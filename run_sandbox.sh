@@ -20,5 +20,5 @@ docker run -it --rm \
 --security-opt no-new-privileges \
 --network=bridge \
 -v "$SANDBOX_DIR/sandbox-config:/home/coding-agent/.config" \
--v "$SANDBOX_DIR/sandbox-output:/home/coding-agent/output" \
+-v "$SANDBOX_DIR/sandbox-output:/home/coding-agent/workdir" \
 agent-sandbox
