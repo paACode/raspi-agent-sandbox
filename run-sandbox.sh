@@ -10,7 +10,7 @@ fi
 # Strip all Linux capabilities
 # Block privilege escalation
 # Internet access, isolated from host network
-sudo docker run -it --rm \
+docker run -it --rm \
 --cpus="3" \
 --cap-drop ALL \
 --security-opt no-new-privileges \
