@@ -12,11 +12,13 @@ else
     sudo usermod -aG docker "$CURRENT_USER"
 fi
 
-echo "=== Perpare folders ==="
+echo "=== Prepare folders ==="
 # sandbox-config: Agent settings (opencode.json)
 # mounts to /home/coding-agent/.config"
 mkdir -p "$SANDBOX_DIR/sandbox-config"
+echo "Added sandbox-config..."
 
 # sandbox-workdir: Shared workdir
 # mounts to /home/coding-agent/workdir"
 mkdir -p "$SANDBOX_DIR/sandbox-workdir"
+echo "Added sandbox-workdir..."
