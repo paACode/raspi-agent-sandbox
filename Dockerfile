@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     python3-dev\
     build-essential\
     && npm install -g opencode-ai\ 
-    && rm -rf /var/lib/apt/lists/*\
+    && rm -rf /var/lib/apt/lists/*
 
 ARG UID
 ARG GID
