@@ -2,8 +2,12 @@ FROM node:20-slim
 
 RUN apt-get update && apt-get install -y \
     neovim curl ripgrep fd-find\
+    python3-pip uv\
+    python3-venv\
+    python3-dev\
+    build-essential\
+    && npm install -g opencode-ai\ 
     && rm -rf /var/lib/apt/lists/*\
-    && npm install -g opencode-ai 
 
 ARG UID
 ARG GID
