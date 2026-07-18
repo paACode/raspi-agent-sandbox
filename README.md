@@ -1,211 +1,85 @@
-#  raspi-agent-sandbox🍓🐋
+#  RAS |  raspi-agent-sandbox🍓🐋
 
 [![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi%204B-c51a4a?logo=raspberrypi&logoColor=white)](https://www.raspberrypi.com/)
 [![Docker](https://img.shields.io/badge/runtime-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Agent](https://img.shields.io/badge/agent-OpenCode-6366f1)](https://opencode.ai)
 [![License: GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](LICENSE)
 
-> *With great power comes great responsibility ⚖️!*
 
-API keys leak in public repos every day. Dependencies get compromised. Malicious packages slip into ecosystems. One wrong `npm install` and something is reading your files, exfiltrating your keys, or worse.
+## What is it?
 
-AI coding agents make this worse. Experienced developers know to isolate their tools. People new to coding often don't — and that is where things go wrong. When you run an agent locally without isolation, it can read all your files, write anywhere, install packages, and make unrestricted network requests. Most tutorials don't mention this.
+RAS allows you to explore coding agents, without the fear of **rm -rf** your whole computer ([mattshumer](https://x.com/mattshumer_/status/2075657271401390161)) , **API key leaks** or blind installs of shady **malicious packages**. RAS is a docker image and comes pre-installed with [OpenCode](https://opencode.ai), which lets you use powerful hosted models directly without a subscription. I recommend to run RAS on a Raspberry Pi , in my case I use a Raspberry Pi 4B. So even if the Agent finds a way to escalate its privileges out of the docker image , its destruction radius is only limited to the Raspi OS, which can easily be replaced by flashing a new USB Stick. 
 
-This project demonstrates how to run an AI agent responsibly — isolated in a Docker sandbox on a Raspberry Pi 4B. We use [OpenCode](https://opencode.ai), which lets you use powerful hosted models directly without a subscription.
+<img width="1894" height="1022" alt="image" src="https://github.com/user-attachments/assets/8a6107a6-345c-4fea-91e8-45ac3d1b0f34" />
 
-> [!IMPORTANT]
-> **Every permission is a liability. Agents will use the access you grant them. Responsibility remains yours; do not trust blindly, and make sure you understand what is happening under the hood.**
+Screenshot: Example of how I use RAS (tmux to organize my windows [runner, workdir, btop, opencode]
 
----
+## Why I created this repo?
 
-## 🧠 Philosophy
+During my masters in applied information and data science I realized that many students new to programming are blinded by the promise that "coding is largely solved".  They pruchase subscriptions , are tokenmaxxing and allow all priviliges to their coding agents without really understanding what is happening under the hood. I cannot blame them, because student projects besides working can sometimes be a real pain and time consuming. But this comes with the risk of destroying your computer, leaking private information and even getting more dependent on coding agents.  
 
-- Agents should operate in a box, not your machine
-- Always review agent output before using it
-- Always review every command an agent executes
-- Always know what files an agent can read
+## RAS Philosophy
+
+- Agents should operate in a sandbox, not your main machine
+- Always review agent output before running it (Setup opencode to ask permission before every action)
+- Agents should never ever push to a GH-repo (Please just don't)
 - Isolation is not paranoia — it is good engineering
 
----
+Please don't be blinded : You will find videos of senior devs showing you examples how they single-shot a new feature in their code base. This is because they have a solid code base, know exactly what they need and why.
+As a junior, you're still building that foundation. Don't play the AI slot machine. Take the scenic route and actually learn from the code.
 
-## 👁️ OpenCode Permission Model
-
-OpenCode is configured to ask for permission before every action — including reading files. This is intentional. It forces you to stay aware of what the agent is doing at every step.
-
-When OpenCode asks *"can I read this file?"* — that is the point. You should know the answer. You should decide consciously, not just let an agent roam freely through your codebase.
-
----
-
-## Demo (Screenshot
-Example of how I use the Sandbox (Terminal Mngmnt with TMUX):
-- Input Folder (Top Left): used by raspi-user
-- Output Folder (Bot Left): Used by coding-agent
-- Opencode (Right)
-<img width="1913" height="1031" alt="image" src="https://github.com/user-attachments/assets/0d6bf0c4-6008-4c44-97f9-b0d4cdbc65a5" />
-
-
-## 🏗️ Isolation Architecture
-
-Two layers of isolation: physical (a dedicated Raspberry Pi) and logical (Docker). Even if something goes wrong, the blast radius is limited to the Pi. Recovery is as simple as flashing a new OS to a USB stick.
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  Your Network                                               │
-│                                                             │
-│   Laptop / Phone                                            │
-│   └── SSH                                                   │
-│              │                                              │
-│              ▼                                              │
-│   ┌──────────────────────────────────────────────────────┐  │
-│   │  Raspberry Pi 4B (OS Lite)                           │  │
-│   │                                                      │  │
-│   │  ~/raspi-agent-sandbox/                              │  │
-│   │  ├── sandbox-config/                                 │  │
-│   │  ├── sandbox-input/                                  │  │
-│   │  └── sandbox-output/                                 │  │
-│   │              │                                       │  │
-│   │              ▼                                       │  │
-│   │  ┌────────────────────────────────────────────────┐  │  │
-│   │  │  Docker Container (agent-sandbox)              │  │  │
-│   │  │                                                │  │  │
-│   │  │  User: coding-agent (non-root, UID 1001)       │  │  │
-│   │  │  Capabilities: none                            │  │  │
-│   │  │  Privilege escalation: blocked                 │  │  │
-│   │  │                                                │  │  │
-│   │  │  ~/.config  ◄── sandbox-config (read/write)    │  │  │
-│   │  │  ~/input    ◄── sandbox-input  (read-only)     │  │  │
-│   │  │  ~/output   ──► sandbox-output (read/write)    │  │  │
-│   │  │                                                │  │  │
-│   │  │  [opencode]                                    │  │  │
-│   │  │       │                                        │  │  │
-│   │  │       └── internet (API calls only)            │  │  │
-│   │  └────────────────────────────────────────────────┘  │  │
-│   └──────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## ⚙️ How It Works
-
-1. SSH into Raspi from anywhere
-2. Drop files into `sandbox-input/` — agent can read but not modify them
-4. Start sandbox — OpenCode runs isolated inside Docker
-5. Adjust agent settings in `sandbox-config/` (if you want it less restrictive)
-6. Agent writes results to `~/output` → appears in `sandbox-output/` on host
-7. Review output on host before copying into your real project
-
----
-
-## 📦 Installed Agent
-
-- [OpenCode](https://opencode.ai) — AI coding agent (`opencode`) — no sign-up required
-
----
-
-## 📋 Requirements
+##  Requirements 
 
 - Raspberry Pi 4B (4GB RAM recommended)
 - Raspberry Pi OS Lite 64-bit (recommended) or full OS
-- Docker
+- Docker installed
 
----
+## How to use it?
 
-## 🚀 Setup
+1. SSH into Raspi from your local Network
+2. Clone the project you want to work on into `sandbox-workdir/`
+3. Start sandbox 
+4. Adjust agent settings in `sandbox-config/` (if you want it less restrictive)
+5. Open opencode and have fun
+6. Agent can work in `~/workdir` → appears in `sandbox-workdir/` on host
+8. You review the code, you test the code, you commit and push the code
 
-### 1. Install Docker
+
+##  Setup
+
+**1. Install Docker**
 
 ```bash
 curl -fsSL https://get.docker.com | sh
 ```
 
-### 2. Clone this repo
+**2. Clone this repo**
 
 ```bash
 git clone git@github.com:paACode/raspi-agent-sandbox.git
 cd raspi-agent-sandbox
 ```
 
-### 3. Build the image
-
+**3. Prepare Sandbox**
 ```bash
-sudo docker build -t agent-sandbox .
+bash prepare_sandbox.sh
 ```
 
-### 4. Start the sandbox
+**4. Build the Sandbox**
 
 ```bash
-bash start-agent-sandbox.sh
+bash build_sandbox.sh
 ```
 
----
-
-## 🛠️ Usage
-
-### Drop files for the agent
+**5. Start the sandbox**
 
 ```bash
-cp myproject.py ~/raspi-agent-sandbox/sandbox-input/
+bash run_sandbox.sh
 ```
+Note: You can also open more than one sandbox instance with this command.
 
-Agent sees it at `~/input/myproject.py` inside container. Read-only — agent cannot modify your original.
-
-### Configure OpenCode
-
-`sandbox-config/` is bidirectional — OpenCode writes its config there, you can edit from host.
-No container restart needed — kill OpenCode, edit config on host, relaunch inside container.
-
-```bash
-# Edit config from host
-nvim ~/raspi-agent-sandbox/sandbox-config/opencode/opencode.json
-```
-
-### Run OpenCode inside container and have fun 😎
+**6. Run Opencode**
 
 ```bash
 opencode
-```
-
-### Review output
-
-```bash
-ls ~/raspi-agent-sandbox/sandbox-output/
-```
-
-Only copy files you have reviewed into your real project.
-
----
-
-## 🔒 Security Model
-
-| Protection | How |
-|---|---|
-| 🖥️ Physical isolation | Runs on separate Raspberry Pi, not your main machine |
-| 👤 Non-root user | Agent runs as `coding-agent` (UID 1001) |
-| 🚫 No capabilities | `--cap-drop ALL` strips all Linux privileges |
-| ⛔ No privilege escalation | `--security-opt no-new-privileges` |
-| 🌐 Isolated network | Bridge network — internet yes, host network no |
-| 📁 Read-only input | Agent cannot modify your source files |
-| 🗑️ Ephemeral container | `--rm` — container deleted on exit, clean slate |
-| ⚡ CPU limit | `--cpus="3"` — leaves 1 core for OS |
-| 👁️ Permission prompts | OpenCode asks before every action, including file reads |
-
----
-
-## ⚠️ Important Reminder
-
-> [!WARNING]
-> Always review every file and every command your agent executed.
-> Agents can make mistakes, introduce vulnerabilities, or do unexpected things.
-> The sandbox limits the blast radius — your review is the last line of defense.
-
----
-
-## 📁 File Structure
-
-```
-raspi-agent-sandbox/
-├── Dockerfile                  # Container definition
-├── start-agent-sandbox.sh      # Launch script with security flags
-└── README.md
 ```
