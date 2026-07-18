@@ -23,4 +23,4 @@ RUN if [ -z "$UID" ] || [ -z "$GID" ]; then \
 
 USER coding-agent
 WORKDIR /home/coding-agent
-CMD ["opencode"]
+CMD ["bash"]
