@@ -2,7 +2,7 @@ FROM node:20-slim
 
 RUN apt-get update && apt-get install -y \
     neovim curl ripgrep fd-find\
-    python3-pip uv\
+    python3-pip\
     python3-venv\
     python3-dev\
     build-essential\
