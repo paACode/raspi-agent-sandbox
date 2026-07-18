@@ -16,7 +16,7 @@ Screenshot: Example of how I use RAS (tmux to organize my windows [runner, workd
 
 ## Why I created this repo?
 
-During my masters in applied information and data science I realized that many students new to programming are blinded by the promise that "coding is largely solved".  They pruchase subscriptions , are tokenmaxxing and allow all priviliges to their coding agents without really understanding what is happening under the hood. I cannot blame them, because student projects besides working can sometimes be a real pain and time consuming. But this comes with the risk of destroying your computer, leaking private information and even getting more dependent on coding agents.  
+During my masters in applied information and data science I realized that many students new to programming are blinded by the promise that "coding is largely solved".  They pruchase subscriptions , spend many tokens and allow all priviliges to their coding agents without really understanding what is happening under the hood. I cannot blame them, because student projects besides working can sometimes be a real pain and time consuming. But this comes with the risk of destroying your computer, leaking private information and even getting more dependent on coding agents.  
 
 ## RAS Philosophy
 
