@@ -4,8 +4,8 @@ SANDBOX_DIR="$(dirname "$(readlink -f "$0")")"
 CONTAINER_NAME="agent_sandbox_instance"
 
 if [ "$(docker ps -q -f name=^/${CONTAINER_NAME}$)" ]; then
-    echo "Container '${CONTAINER_NAME}' is already running. Attaching via opencode..."
-    docker exec -it "$CONTAINER_NAME" opencode
+    echo "Container '${CONTAINER_NAME}' is already running. Attaching via bash..."
+    docker exec -it "$CONTAINER_NAME" bash
     exit 0
 fi
 
