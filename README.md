@@ -50,7 +50,8 @@ As a junior, you're still building that foundation. Don't play the AI slot machi
 **1. Install Docker**
 
 ```bash
-curl -fsSL https://get.docker.com | sh
+sudo apt update
+sudo apt install docker.io
 ```
 
 **2. Clone this repo**
@@ -64,21 +65,28 @@ cd raspi-agent-sandbox
 ```bash
 bash prepare_sandbox.sh
 ```
+**4. Open a new SSH Session**
 
-**4. Build the Sandbox**
+Note: makes sure USER is loaded within new Docker-Group!
+```bash
+exit
+ssh yourname@192.XXX.X.XXX
+```
+
+**5. Build the Sandbox**
 
 ```bash
 bash build_sandbox.sh
 ```
 
-**5. Start the sandbox**
+**6. Start the sandbox**
 
 ```bash
 bash run_sandbox.sh
 ```
 Note: You can also open more than one sandbox instance with this command.
 
-**6. Run Opencode**
+**7. Run Opencode**
 
 ```bash
 opencode
